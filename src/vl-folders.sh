@@ -1,4 +1,7 @@
-# Create labels for the subfolder structure within the collection root.
+# Set the root directory for the visual library
+imgRootDir="${HOME}/Pictures/Images"
+
+# Create labels for the subfolder structure within the library root.
 #
 # Initial example accepts a single letter (must be unique) OR a full name 
 # spelled in any combination of uppercase and lowercase letters.
