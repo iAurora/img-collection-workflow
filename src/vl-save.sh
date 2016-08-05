@@ -1,34 +1,35 @@
 #!/bin/bash
 
+# Source the configuration file
+dir="${BASH_SOURCE%/*}"
+if [[ ! -d "$dir" ]]; then dir="$PWD"; fi
+. "$dir/vl-config.sh"
 
-# Include the folders configuration script
-DIR="${BASH_SOURCE%/*}"
-if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
-. "$DIR/vl-folders.sh"
-
+# Make sure all checks below are case-insensitive
+shopt -s nocasematch
 
 # Get the URL from the clipboard
-imgSrcURL=$(pbpaste)
+imgSrcURL="$(pbpaste)"
 
+# Trim the Dropbox download suffix if present
+if [[ $imgSrcURL = *?dl=* ]]; then 
+  imgSrcURL="${imgSrcURL%?dl=*}"
+fi
 
-urlPattern="^(https?|ftp|file).+(\.[a-z]+)$"
+# URL validation pattern
+urlPattern="^(https?|ftp|file).+(\.($allowedFileExtensions)+)$"
 
-# test for regex match
-# echo "http://unsplash.com/photos/gvLRWYcPEs4/download" | egrep "^(https?|ftp|file).+(\.[a-z]+)$"
-
-
-if [[ "$imgSrcURL" =~ $urlPattern ]]
-then 
-    echo "Link valid"
-else
-    echo "Link not valid"
+# URL validation check
+if [[ ! $imgSrcURL =~ $urlPattern ]]; then 
+  osascript -e 'display notification "Make sure your clipboard contains a direct link to a file with one of the accepted extensions." with title "Unacceptable URL"'
+  exit 1
 fi
 
 # Get the URL of the frontmost window/tab in Safari
-imgPageURL=$(osascript -e 'tell application "Safari" to set theURL to URL of front document')
+imgPageURL="$(osascript -e 'tell application "Safari" to set theURL to URL of front document')"
 
 # Get the title of the frontmost window/tab of Safari
-imgPageTitle=$(osascript -e 'tell application "Safari" to set theTitle to name of front document')
+imgPageTitle="$(osascript -e 'tell application "Safari" to set theTitle to name of front document')"
 
 # Get the extention of the linked image
 imgExt=".${imgSrcURL##*.}"
@@ -36,33 +37,27 @@ imgExt=".${imgSrcURL##*.}"
 # Generate the timestamp
 imgDate=$(date '+%s')
 
-# Get the 2nd provided argument as tags
-imgTags="$2"
+# Get provided tags or set the default one
+if [[ -n $2 ]]; then
+  imgTags="$2"
+else
+  imgTags="untagged"
+fi
 
-
-# Pick the title
-#
-# ~ Custom title option
-# If argument 3 or 4 is provided and is longer than 3 characters, use it as a title for the saved image.
-#
-# Otherwise, use the title of the frontmost page in Safari
+# Set the title of the image
 if [[ ${#3} -gt 3 && ${#4} -le 3 && -z $5 ]]; then
   imgTitle="$3"
 elif [[ ${#4} -gt 3 && ${#3} -le 3 && -z $5 ]]; then
   imgTitle="$4"
-elif [[ ${#3} -gt 3 && ${#4} -gt 3 || ${#3} -le 3 && ${#4} -le 3 || $5 ]]; then
+elif [[ ${#3} -gt 3 && ${#4} -gt 3 || ${#3} -ge 1 && ${#3} -le 3 && ${#4} -ge 1 && ${#4} -le 3 || $5 ]]; then
    osascript -e 'display notification "The provided custom title doesn'"'"'t look right. Using the frontmost browser tab title instead." with title "Ooops!"'
   imgTitle="${imgPageTitle}"
-else 
+else
   imgTitle="${imgPageTitle}"
 fi
 
-# Compose the full filename
-#
-# ~ Retina handling
-# If either of the arguments 3 or 4 equals "r", "R" or "@2x", append "@2x" to the end of the filename
-# This makes Quick look show retina images sharper rather than larger
-if [[ "$3" == [rR] || "$3" == "@2x" || "$4" == [rR] || "$4" == "@2x" ]]; then
+# Compose the full name for the file (with retina handling)
+if [[ "$3" =~ (r|2x|@2x) || "$4" =~ (r|2x|@2x) ]]; then
   imgName="${imgTitle} ${imgDate} @2x${imgExt}"
 else 
   imgName="${imgTitle} ${imgDate}${imgExt}"
@@ -71,26 +66,32 @@ fi
 # Compose the absolute path for the file
 imgPath=$imgRootDir$imgFolder$imgName
 
-
 # Download the file
-curl -o "${imgPath}" "${imgSrcURL}" || osascript -e 'display notification "Make sure the image URL is in the clipboard and a frontmost tab in Safari has an adequate title." with title "Failure!"' # && exit 0
+curl -o "${imgPath}" "${imgSrcURL}"
 
-
-# image optimization
-if [[ "$imgExt" == .[jJ][pP]*[gG] ]]; then
-  jpegtran -optimize -progressive -outfile "${imgPath}" "${imgPath}" || \
-  osascript -e 'delay "4"' -e 'display notification "Something went wrong" with title "Optimisation failed"'
-elif [[ "$imgExt" == .[pP][nN][gG] ]]; then
-  optipng "${imgPath}" || \
-  osascript -e 'display notification "Something went wrong" with title "Optimisation failed"'
-elif [[ "$imgExt" == .[gG][iI][fF] ]]; then
-  gifsicle --colors 256 -O3 "${imgPath}" -o "${imgPath}" || \
-  osascript -e 'display notification "Something went wrong" with title "Optimisation failed"'
+# Download success check
+if [[ $? -eq 1 ]]; then
+ osascript -e 'display notification "Something is wrong with the file you are trying to download. Make sure the link is valid" with title "Failure!"'
+ exit 1
 fi
 
-tag -a "${imgTags}" "${imgPath}" || osascript -e 'display notification "Something went wrong" with title "Tagging failed"'
+# Optimize the image if the type is jpg, png or gif
+if [[ "$imgExt" == .jp*g ]]; then
+  jpegtran -optimize -progressive -outfile "${imgPath}" "${imgPath}" || \
+  osascript -e 'delay "3"' -e 'display notification "Something went wrong" with title "Optimisation failed"'
+elif [[ "$imgExt" == .png ]]; then
+  optipng "${imgPath}" || \
+  osascript -e 'delay "3"' -e 'display notification "Something went wrong" with title "Optimisation failed"'
+elif [[ "$imgExt" == .gif ]]; then
+  gifsicle --colors 256 -O3 "${imgPath}" -o "${imgPath}" || \
+  osascript -e 'delay "3"' -e 'display notification "Something went wrong" with title "Optimisation failed"'
+fi
+
+# Apply macOS tags to the file
+tag -a "${imgTags}" "${imgPath}" || osascript -e 'delay "3"' -e 'display notification "Something went wrong" with title "Tagging failed"'
 
 # Compose the Finder comment
 imgComment="title: ${imgPageTitle}"$'\n\n'"page: ${imgPageURL}"$'\n\n'"url: ${imgSrcURL}"
 
+# Apply the FInder comment
 osascript -e 'on run {f, c}' -e 'tell app "Finder" to set comment of (POSIX file f as alias) to c' -e end "${imgPath}" "${imgComment}"
