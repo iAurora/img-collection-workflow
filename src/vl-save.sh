@@ -80,7 +80,7 @@ if [[ "$imgExt" == .jp*g ]]; then
   jpegtran -optimize -progressive -outfile "${imgPath}" "${imgPath}" || \
   osascript -e 'delay "3"' -e 'display notification "Something went wrong" with title "Optimisation failed"'
 elif [[ "$imgExt" == .png ]]; then
-  optipng "${imgPath}" || \
+  pngcrush -reduce -ow "${imgPath}" || \
   osascript -e 'delay "3"' -e 'display notification "Something went wrong" with title "Optimisation failed"'
 elif [[ "$imgExt" == .gif ]]; then
   gifsicle --colors 256 -O3 "${imgPath}" -o "${imgPath}" || \
