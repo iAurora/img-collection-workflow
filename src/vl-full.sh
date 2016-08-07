@@ -1,3 +1,0 @@
-
-
-screencapture -c
