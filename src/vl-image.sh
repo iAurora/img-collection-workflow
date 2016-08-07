@@ -71,27 +71,30 @@ curl -o "${imgPath}" "${imgSrcURL}"
 
 # Download success check
 if [[ $? -eq 1 ]]; then
- osascript -e 'display notification "Something is wrong with the file you are trying to download. Make sure the link is valid" with title "Failure!"'
+ osascript -e 'delay "0.5"' -e 'display notification "Something is wrong with the file you are trying to download. Make sure the link is valid" with title "Failure!"'
  exit 1
 fi
 
 # Optimize the image if the type is jpg, png or gif
 if [[ "$imgExt" == .jp*g ]]; then
   /usr/local/bin/jpegtran -optimize -progressive -outfile "${imgPath}" "${imgPath}" || \
-  osascript -e 'delay "3"' -e 'display notification "Something went wrong" with title "Optimisation failed"'
+  osascript -e 'delay "0.5"' -e 'display notification "Something went wrong" with title "Optimisation failed"'
 elif [[ "$imgExt" == .png ]]; then
   /usr/local/bin/pngcrush -reduce -ow "${imgPath}" || \
-  osascript -e 'delay "3"' -e 'display notification "Something went wrong" with title "Optimisation failed"'
+  osascript -e 'delay "0.5"' -e 'display notification "Something went wrong" with title "Optimisation failed"'
 elif [[ "$imgExt" == .gif ]]; then
   /usr/local/bin/gifsicle --colors 256 -O3 "${imgPath}" -o "${imgPath}" || \
-  osascript -e 'delay "3"' -e 'display notification "Something went wrong" with title "Optimisation failed"'
+  osascript -e 'delay "0.5"' -e 'display notification "Something went wrong" with title "Optimisation failed"'
 fi
 
 # Apply macOS tags to the file
-/usr/local/bin/tag -a "${imgTags}" "${imgPath}" || osascript -e 'delay "3"' -e 'display notification "Something went wrong" with title "Tagging failed"'
+/usr/local/bin/tag -a "${imgTags}" "${imgPath}" || osascript -e 'delay "0.5"' -e 'display notification "Something went wrong" with title "Tagging failed"'
 
 # Compose the Finder comment
 imgComment="title: ${imgPageTitle}"$'\n\n'"page: ${imgPageURL}"$'\n\n'"url: ${imgSrcURL}"
 
-# Apply the FInder comment
+# Apply the Finder comment
 osascript -e 'on run {f, c}' -e 'tell app "Finder" to set comment of (POSIX file f as alias) to c' -e end "${imgPath}" "${imgComment}"
+
+# Confirm success
+osascript -e 'delay "1"' -e 'display notification "All went well. Hopefully." with title "Job complete!"'
