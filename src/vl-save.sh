@@ -77,18 +77,18 @@ fi
 
 # Optimize the image if the type is jpg, png or gif
 if [[ "$imgExt" == .jp*g ]]; then
-  jpegtran -optimize -progressive -outfile "${imgPath}" "${imgPath}" || \
+  /usr/local/bin/jpegtran -optimize -progressive -outfile "${imgPath}" "${imgPath}" || \
   osascript -e 'delay "3"' -e 'display notification "Something went wrong" with title "Optimisation failed"'
 elif [[ "$imgExt" == .png ]]; then
-  pngcrush -reduce -ow "${imgPath}" || \
+  /usr/local/bin/pngcrush -reduce -ow "${imgPath}" || \
   osascript -e 'delay "3"' -e 'display notification "Something went wrong" with title "Optimisation failed"'
 elif [[ "$imgExt" == .gif ]]; then
-  gifsicle --colors 256 -O3 "${imgPath}" -o "${imgPath}" || \
+  /usr/local/bin/gifsicle --colors 256 -O3 "${imgPath}" -o "${imgPath}" || \
   osascript -e 'delay "3"' -e 'display notification "Something went wrong" with title "Optimisation failed"'
 fi
 
 # Apply macOS tags to the file
-tag -a "${imgTags}" "${imgPath}" || osascript -e 'delay "3"' -e 'display notification "Something went wrong" with title "Tagging failed"'
+/usr/local/bin/tag -a "${imgTags}" "${imgPath}" || osascript -e 'delay "3"' -e 'display notification "Something went wrong" with title "Tagging failed"'
 
 # Compose the Finder comment
 imgComment="title: ${imgPageTitle}"$'\n\n'"page: ${imgPageURL}"$'\n\n'"url: ${imgSrcURL}"
