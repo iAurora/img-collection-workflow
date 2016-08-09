@@ -89,17 +89,17 @@ fi
 
 
 # Optimize the image if the type is jpg, png or gif
-if [[ "$fileExtension" == .jp*g ]]; then
-  /usr/local/bin/jpegtran -optimize -progressive -outfile "${filePath}" "${filePath}" || \
-  osascript -e 'delay "0.5"' -e 'display notification "Something went wrong" with title "Optimisation failed"'
+if $optimiseImages; then 
 
-elif [[ "$fileExtension" == .png ]]; then
-  /usr/local/bin/pngcrush -reduce -ow "${filePath}" || \
-  osascript -e 'delay "0.5"' -e 'display notification "Something went wrong" with title "Optimisation failed"'
+  optimisationError () { osascript -e 'delay "0.5"' -e 'display notification "Something went wrong" with title "Optimisation failed"'; }
 
-elif [[ "$fileExtension" == .gif ]]; then
-  /usr/local/bin/gifsicle --colors 256 -O3 "${filePath}" -o "${filePath}" || \
-  osascript -e 'delay "0.5"' -e 'display notification "Something went wrong" with title "Optimisation failed"'
+  if [[ "$fileExtension" == .jp*g ]]; then optimiseJPG
+
+  elif [[ "$fileExtension" == .png ]]; then optimisePNG
+
+  elif [[ "$fileExtension" == .gif ]]; then optimiseGIF
+
+  fi
 
 fi
 

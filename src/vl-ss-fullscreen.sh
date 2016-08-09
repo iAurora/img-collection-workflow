@@ -59,9 +59,16 @@ filePath=$rootDir$subDir$fileName
 # Take an fullscreen screenshot
 screencapture "${filePath}"
 
+
 # Optimize the image
-/usr/local/bin/pngcrush -reduce -ow "${filePath}" || \
-  osascript -e 'delay "0.5"' -e 'display notification "Something went wrong" with title "Optimisation failed"'
+if $optimiseImages; then 
+
+  optimisationError () { osascript -e 'delay "0.5"' -e 'display notification "Something went wrong" with title "Optimisation failed"'; }
+
+  optimisePNG
+
+fi
+
 
 # Apply macOS tags to the file
 /usr/local/bin/tag -a "${macTags}" "${filePath}" || osascript -e 'delay "0.5"' -e 'display notification "Something went wrong" with title "Tagging failed"'

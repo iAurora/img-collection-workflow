@@ -74,8 +74,14 @@ mv "$filePath" "$filePathTrimmed"
 
 
 # Optimize the image
-/usr/local/bin/pngcrush -reduce -ow "${filePathTrimmed}" || \
-osascript -e 'delay "0.5"' -e 'display notification "Something went wrong" with title "Optimisation failed"'
+if $optimiseImages; then 
+
+  optimisationError () { osascript -e 'delay "0.5"' -e 'display notification "Something went wrong" with title "Optimisation failed"'; }
+
+  optimisePNG
+
+fi
+
 
 # Apply macOS tags to the file
 /usr/local/bin/tag -a "${macTags}" "${filePathTrimmed}" || osascript -e 'delay "0.5"' -e 'display notification "Something went wrong" with title "Tagging failed"'

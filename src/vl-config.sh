@@ -4,17 +4,17 @@ rootDir="${HOME}/Pictures/VL"
 # Create the labels for the subfolder structure.
 # ==============================================
 # Labels are shorthands for the folders the images can be saved to.
-# Each folder can have any amount of labels but they all must be unique.
+# Each folder can have any amount of labels (separated by | ) but they all must be unique.
 # Labels are case-insensitive, so providing lowercase versions is sufficient.
-# A sub-subfolder example: hd | home-deco ) subDir="/Home/Decoration/" ;;
+# A sub-subfolder example: hd | hmd | home-deco ) subDir="/Home/Decoration/" ;;
 
 case $(echo "$1" | tr '[:upper:]' '[:lower:]') in
   a | art ) subDir="/Art/" ;;
-  b | br | brand ) subDir="/Brand/" ;;
+  b | brand ) subDir="/Brand/" ;;
   c | color ) subDir="/Color/" ;;
   f | fonts ) subDir="/Fonts/" ;;
   h | home ) subDir="/Home/" ;;
-  i | il | illustration ) subDir="/Illustration/" ;;
+  i | illustration ) subDir="/Illustration/" ;;
   p | photo ) subDir="/Photo/" ;;
   s | style ) subDir="/Style/" ;;
   w | web ) subDir="/Web/"  ;;
@@ -33,3 +33,24 @@ acceptedFileTypes="jpg|jpeg|png|tiff|gif|bmp|svg|webp|tga|pdf|eps|psd|ai|indd|sk
 
 # Set the default width for the full page screenshots
 siteWidth="1200"
+
+# Turn image optimisation on and off.
+# ===================================
+# Turning it off will make jpegtran, pngcrush and gifsicle dependencies unnecessary.
+# It will also speed up the saving proccess but images will occupy more space on a disk.
+# Use "false" for turning the optimisation off.
+optimiseImages=true
+
+# Adjust optimisation settings.
+# =============================
+# The default settings are reasonably fast for single images, yet allow a noticeable reduction in file size.
+# Check documentation for jpegtran, pngcrush and gifsicle for more options.
+optimiseJPG () {
+  /usr/local/bin/jpegtran -optimize -progressive -outfile "${filePath}" "${filePath}" || optimisationError
+}
+optimisePNG () {
+  /usr/local/bin/pngcrush -reduce -ow "${filePath}" || optimisationError
+}
+optimiseGIF () {
+  /usr/local/bin/gifsicle --colors 256 -O3 "${filePath}" -o "${filePath}" || optimisationError
+}
