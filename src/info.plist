@@ -126,7 +126,7 @@
 				<key>concurrently</key>
 				<false/>
 				<key>escaping</key>
-				<integer>102</integer>
+				<integer>98</integer>
 				<key>script</key>
 				<string>./vl-s-image.sh {query}</string>
 				<key>scriptargtype</key>
@@ -149,7 +149,7 @@
 				<key>concurrently</key>
 				<false/>
 				<key>escaping</key>
-				<integer>102</integer>
+				<integer>98</integer>
 				<key>script</key>
 				<string>./vl-ss-area-c.sh</string>
 				<key>scriptargtype</key>
@@ -172,7 +172,7 @@
 				<key>concurrently</key>
 				<false/>
 				<key>escaping</key>
-				<integer>102</integer>
+				<integer>98</integer>
 				<key>script</key>
 				<string>./vl-ss-area.sh {query}</string>
 				<key>scriptargtype</key>
@@ -279,7 +279,7 @@
 				<key>concurrently</key>
 				<false/>
 				<key>escaping</key>
-				<integer>102</integer>
+				<integer>98</integer>
 				<key>script</key>
 				<string>./vl-ss-fullscreen-c.sh</string>
 				<key>scriptargtype</key>
@@ -302,7 +302,7 @@
 				<key>concurrently</key>
 				<false/>
 				<key>escaping</key>
-				<integer>102</integer>
+				<integer>98</integer>
 				<key>script</key>
 				<string>./vl-ss-fullscreen.sh {query}</string>
 				<key>scriptargtype</key>
@@ -346,7 +346,7 @@
 				<key>concurrently</key>
 				<false/>
 				<key>escaping</key>
-				<integer>102</integer>
+				<integer>98</integer>
 				<key>script</key>
 				<string>./vl-ss-page.sh {query}</string>
 				<key>scriptargtype</key>

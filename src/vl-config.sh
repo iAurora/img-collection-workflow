@@ -8,22 +8,24 @@ rootDir="${HOME}/Pictures/VL"
 # Labels are case-insensitive, so providing lowercase versions is sufficient.
 # A sub-subfolder example: hd | hmd | home-deco ) subDir="/Home/Decoration/" ;;
 
-case $(echo "$1" | tr '[:upper:]' '[:lower:]') in
-  a | art ) subDir="/Art/" ;;
-  b | brand ) subDir="/Brand/" ;;
-  c | color ) subDir="/Color/" ;;
-  f | fonts ) subDir="/Fonts/" ;;
-  h | home ) subDir="/Home/" ;;
-  i | illustration ) subDir="/Illustration/" ;;
-  p | photo ) subDir="/Photo/" ;;
-  s | style ) subDir="/Style/" ;;
-  w | web ) subDir="/Web/"  ;;
-  m | misc ) subDir="/Misc/" ;;
-  * ) subDir="/Misc/"  
-      osascript -e 'display notification "Image saved to a Misc folder" with title "Non-existing label"' ;;
-esac
+setDestinationDir () {
+  case $folderLabel in
+    a | art ) subDir="/Art/" ;;
+    b | brand ) subDir="/Brand/" ;;
+    c | color ) subDir="/Color/" ;;
+    f | fonts ) subDir="/Fonts/" ;;
+    h | home ) subDir="/Home/" ;;
+    i | illustration ) subDir="/Illustration/" ;;
+    p | photo ) subDir="/Photo/" ;;
+    s | style ) subDir="/Style/" ;;
+    w | web ) subDir="/Web/"  ;;
+    m | misc ) subDir="/Misc/" ;;
+    * ) subDir="/Misc/"  
+        osascript -e 'display notification "Image saved to a Misc folder" with title "Non-existing label"' ;;
+  esac
+}
 
-# Set the accepted file extensions
+# Set the accepted file extensions for web image downloads
 # ===========================
 # The script performs a basic sanity check and issues a warning if the contents
 # of the clipboard do not look like a direct URL to a file. The setting below
