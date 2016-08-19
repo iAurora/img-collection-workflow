@@ -9,41 +9,51 @@ if [[ ! -d "$dir" ]]; then dir="$PWD"; fi
 shopt -s nocasematch
 
 
-# Generate the timestamp
-timeStamp=$(date '+%s')
-
 # Screenshot image extension
 fileExtension=".png"
 
+# Generate the timestamp
+timeStamp=$(date '+%s')
 
-# Pick the title for the file (custom from arg 3/4 or default)
-if [[ ${#3} -gt 3 && ${#4} -le 3 && -z $5 ]]; then
-  fileTitle="${3} ${timeStamp}"
-
-elif [[ ${#4} -gt 3 && ${#3} -le 3 && -z $5 ]]; then
-  fileTitle="${4} ${timeStamp}"
-
-elif [[ ${#3} -gt 3 && ${#4} -gt 3 || ${#3} -ge 1 && ${#3} -le 3 && ${#4} -ge 1 && ${#4} -le 3 || $5 ]]; then
-  fileTitle="${timeStamp}"
-  osascript -e 'display notification "The provided custom title doesn'"'"'t look right. Using the default title instead." with title "Ooops!"'
-
-else fileTitle="${timeStamp}"
-
+# Set the retina suffix
+if $retinaMode; then
+  retinaSuffix=" @2x"
+else
+  retinaSuffix=""
 fi
 
+# Set the default tag
+macTags="untagged"
 
-# Compose the filename with retina option
-if [[ "$3" =~ (r|2x|@2x) || "$4" =~ (r|2x|@2x) ]]; then
-  fileName="${fileTitle} @2x${fileExtension}"
 
-else 
-  fileName="${fileTitle}${fileExtension}"
-  
-fi
+# Process the supplied options
+while [ "$1" != "" ]; do
+  case $1 in
+    '@'* )  folderLabel="${1#@}"
+            ;;
 
+    '+'* )  macTags="${1#+}"
+            ;;
+
+    -t )    shift
+            customTitle="$1 "
+            ;;
+            
+    * )     osascript -e 'display notification "One or more of the provided options doesn'"'"'t look right. Using the defaults instead." with title "Ooops!"'
+  esac
+  shift
+done
+
+
+# Call the "label > subdir" mapping function from the config
+setDestinationDir
+
+# Compose the full filename
+fileName="${customTitle}${timeStamp}${retinaSuffix}${fileExtension}"
 
 # Compose the absolute path to the file
 filePath=$rootDir$subDir$fileName
+
 
 # Take an interactive screenshot
 screencapture -io "${filePath}"
@@ -61,16 +71,8 @@ if $optimiseImages; then
 fi
 
 
-# Get provided tags or set the default one
-if [[ -n $2 ]]; then
-  macTags="$2"
-else
-  macTags="untagged"
-fi
-
 # Apply macOS tags to the file
 /usr/local/bin/tag -a "${macTags}" "${filePath}" || osascript -e 'delay "0.5"' -e 'display notification "Something went wrong" with title "Tagging failed"'
-
 
 # Get the URL of the frontmost tab in Safari
 pageURL="$(osascript -e 'tell application "Safari" to set pageURL to URL of front document')"
