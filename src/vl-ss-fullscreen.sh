@@ -25,6 +25,9 @@ fi
 # Set the default tag
 macTags="untagged"
 
+# Set the default Finder comments status
+finderComments=true
+
 
 # Process the supplied options
 while [ "$1" != "" ]; do
@@ -37,6 +40,9 @@ while [ "$1" != "" ]; do
 
     -t )    shift
             customTitle="$1 "
+            ;;
+
+    -c )    finderComments=false
             ;;
             
     * )     osascript -e 'display notification "One or more of the provided options doesn'"'"'t look right. Using the defaults instead." with title "Ooops!"'
@@ -74,17 +80,23 @@ fi
 # Apply macOS tags to the file
 /usr/local/bin/tag -a "${macTags}" "${filePath}" || osascript -e 'delay "0.5"' -e 'display notification "Something went wrong" with title "Tagging failed"'
 
-# Get the URL of the frontmost tab in Safari
-pageURL="$(osascript -e 'tell application "Safari" to set pageURL to URL of front document')"
 
-# Get the title of the frontmost tab of Safari
-pageTitle="$(osascript -e 'tell application "Safari" to set pageTitle to name of front document')"
+# Add Finder comments
+if $finderComments; then
 
-# Compose the Finder Comments
-finderComments="title: ${pageTitle}"$'\n\n'"page: ${pageURL}"
+  # Get the URL of the frontmost tab in Safari
+  pageURL="$(osascript -e 'tell application "Safari" to set pageURL to URL of front document')"
 
-# Apply the Finder Comments
-osascript -e 'on run {f, c}' -e 'tell app "Finder" to set comment of (POSIX file f as alias) to c' -e end "${filePath}" "${finderComments}"
+  # Get the title of the frontmost tab of Safari
+  pageTitle="$(osascript -e 'tell application "Safari" to set pageTitle to name of front document')"
+
+  # Compose Finder Comments
+  finderComments="title: ${pageTitle}"$'\n\n'"page: ${pageURL}"
+
+  # Apply Finder Comments
+  osascript -e 'on run {f, c}' -e 'tell app "Finder" to set comment of (POSIX file f as alias) to c' -e end "${filePath}" "${finderComments}"
+
+fi
 
 
 # Confirm success

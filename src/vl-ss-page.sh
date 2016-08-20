@@ -15,7 +15,7 @@ pageURL="$(osascript -e 'tell application "Safari" to set pageURL to URL of fron
 # Generate the timestamp
 timeStamp=$(date '+%s')
 
-# Set an empty custom title
+# Set the default custom title
 customTitle=""
 
 # Set the retina suffix
@@ -27,6 +27,9 @@ fi
 
 # Set the default tag
 macTags="untagged"
+
+# Set the default Finder comments status
+finderComments=true
 
 
 # Process the supplied options
@@ -44,6 +47,9 @@ while [ "$1" != "" ]; do
 
     -w )    shift
             defaultWidth="$1 "
+            ;;
+
+    -c )    finderComments=false
             ;;
             
     * )     osascript -e 'display notification "One or more of the provided options doesn'"'"'t look right. Using the defaults instead." with title "Ooops!"'
@@ -93,17 +99,22 @@ if $optimiseImages; then
 fi
 
 
-# Apply macOS tags to the file
-/usr/local/bin/tag -a "${macTags}" "${filePath}" || osascript -e 'delay "0.5"' -e 'display notification "Something went wrong" with title "Tagging failed"'
+# Add Finder comments
+if $finderComments; then
 
-# Get the title of the frontmost tab of Safari
-pageTitle="$(osascript -e 'tell application "Safari" to set pageTitle to name of front document')"
+  # Apply macOS tags to the file
+  /usr/local/bin/tag -a "${macTags}" "${filePath}" || osascript -e 'delay "0.5"' -e 'display notification "Something went wrong" with title "Tagging failed"'
 
-# Compose the Finder Comments
-finderComments="title: ${pageTitle}"$'\n\n'"page: ${pageURL}"
+  # Get the title of the frontmost tab of Safari
+  pageTitle="$(osascript -e 'tell application "Safari" to set pageTitle to name of front document')"
 
-# Apply the Finder Comments
-osascript -e 'on run {f, c}' -e 'tell app "Finder" to set comment of (POSIX file f as alias) to c' -e end "${filePath}" "${finderComments}"
+  # Compose Finder Comments
+  finderComments="title: ${pageTitle}"$'\n\n'"page: ${pageURL}"
+
+  # Apply Finder Comments
+  osascript -e 'on run {f, c}' -e 'tell app "Finder" to set comment of (POSIX file f as alias) to c' -e end "${filePath}" "${finderComments}"
+
+fi
 
 
 # Confirm success
