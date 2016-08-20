@@ -41,6 +41,10 @@ while [ "$1" != "" ]; do
     -t )    shift
             customTitle="$1 "
             ;;
+
+    -w )    shift
+            siteWidth="$1 "
+            ;;
             
     * )     osascript -e 'display notification "One or more of the provided options doesn'"'"'t look right. Using the defaults instead." with title "Ooops!"'
   esac
@@ -59,7 +63,7 @@ fileName="${customTitle}${timeStamp}${retinaSuffix}"
 subDirPath=$rootDir$subDir
 
 # Take a screenshot of the page
-/usr/local/bin/webkit2png "${pageURL}" --ignore-ssl-check -F -W "${siteWidth}" -D "${subDirPath}" -o "${fileName}"
+/usr/local/bin/webkit2png "${pageURL}" --ignore-ssl-check --scale=1 -F --width="${siteWidth}" --clipwidth="${siteWidth}" -D "${subDirPath}" -o "${fileName}"
 
 
 # Check the success status
