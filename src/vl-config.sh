@@ -45,7 +45,9 @@ acceptedFileTypes="jpg|jpeg|png|tiff|gif|bmp|svg|webp|tga|pdf|eps|psd|ai|indd|sk
 retinaMode=true
 
 # Set the default width for the full page screenshots
-siteWidth="1200"
+defaultWidth=1200
+
+responsiveWidths=( 480 320 )
 
 # Turn image optimisation on and off.
 # ===================================

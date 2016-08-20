@@ -88,6 +88,19 @@
 		</array>
 		<key>E0981579-FDC8-48D8-9014-A167A82D5EBC</key>
 		<array/>
+		<key>ED70539C-9899-441C-8FB8-2636798D573A</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>166A0E2A-CDAB-46DF-A804-5480CF11A26B</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
 	</dict>
 	<key>createdby</key>
 	<string>Val Ka</string>
@@ -322,6 +335,50 @@
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>98</integer>
+				<key>script</key>
+				<string>./vl-ss-responsive.sh {query}</string>
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>type</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>166A0E2A-CDAB-46DF-A804-5480CF11A26B</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argumenttype</key>
+				<integer>1</integer>
+				<key>keyword</key>
+				<string>vlp</string>
+				<key>subtext</key>
+				<string></string>
+				<key>text</key>
+				<string>Screenshot Full Page</string>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.keyword</string>
+			<key>uid</key>
+			<string>ED70539C-9899-441C-8FB8-2636798D573A</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>argumenttype</key>
 				<integer>1</integer>
 				<key>keyword</key>
@@ -374,6 +431,13 @@
 			<integer>400</integer>
 			<key>ypos</key>
 			<integer>190</integer>
+		</dict>
+		<key>166A0E2A-CDAB-46DF-A804-5480CF11A26B</key>
+		<dict>
+			<key>xpos</key>
+			<integer>580</integer>
+			<key>ypos</key>
+			<integer>500</integer>
 		</dict>
 		<key>3771B74D-E6A4-4609-8145-DA87EA79149E</key>
 		<dict>
@@ -451,6 +515,13 @@
 			<integer>230</integer>
 			<key>ypos</key>
 			<integer>40</integer>
+		</dict>
+		<key>ED70539C-9899-441C-8FB8-2636798D573A</key>
+		<dict>
+			<key>xpos</key>
+			<integer>400</integer>
+			<key>ypos</key>
+			<integer>500</integer>
 		</dict>
 	</dict>
 	<key>webaddress</key>
