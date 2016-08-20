@@ -52,13 +52,13 @@ done
 setDestinationDir
 
 # Compose the filename without the extension
-fileName="${customTitle}${timeStamp}${retinaSuffix}"
+fileName="${customTitle}${timeStamp}"
 
 # Compose the destination directory for the file
 subDirPath=$rootDir$subDir
 
 # Compose the path for the page subdir
-responsiveDirPath="${subDirPath}${fileName/$retinaSuffix/}/"
+responsiveDirPath="${subDirPath}${fileName}/"
 
 # Create the subdir to contain the screenshots of the page
 mkdir "$responsiveDirPath"
@@ -80,7 +80,7 @@ do
   # Compose the path to the file and trim the suffix that webkit2png adds automatically
   filePathWithSuffix="${responsiveDirPath}${fileName}-full.png"
 
-  filePath="${filePathWithSuffix/$retinaSuffix-full/ $w$retinaSuffix}"
+  filePath="${filePathWithSuffix/-full/ $w$retinaSuffix}"
 
   mv "$filePathWithSuffix" "$filePath"
 
@@ -115,11 +115,14 @@ done
 # Grab the width of the primary screenshot
 primaryWidth="${responsiveWidths[0]}"
 
+# Compose the filename of the primary screenshot
+primaryFilename="${fileName} ${primaryWidth}${retinaSuffix}.png"
+
 # Compose the path to the primary screenshot within the page subfolder
-primaryFileInner="${responsiveDirPath}${fileName/$retinaSuffix/ $primaryWidth$retinaSuffix}.png"
+primaryFileInner="${responsiveDirPath}${primaryFilename}"
 
 # Compose the path to the primary screenshot outside of the page subfolder
-primaryFileOuter="${subDirPath}${fileName/$retinaSuffix/ $primaryWidth$retinaSuffix}.png"
+primaryFileOuter="${subDirPath}${primaryFilename}"
 
 # Move the primary screenshot to the directory specified by the label
 mv "$primaryFileInner" "$primaryFileOuter"
