@@ -335,6 +335,27 @@
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>argumenttype</key>
+				<integer>1</integer>
+				<key>keyword</key>
+				<string>vlp</string>
+				<key>subtext</key>
+				<string></string>
+				<key>text</key>
+				<string>Screenshot Full Page</string>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.keyword</string>
+			<key>uid</key>
+			<string>9B047D4A-A26F-4EAF-8E1E-0C941C2B0724</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>concurrently</key>
 				<false/>
 				<key>escaping</key>
@@ -361,7 +382,7 @@
 				<key>argumenttype</key>
 				<integer>1</integer>
 				<key>keyword</key>
-				<string>vlp</string>
+				<string>vlr</string>
 				<key>subtext</key>
 				<string></string>
 				<key>text</key>
@@ -373,27 +394,6 @@
 			<string>alfred.workflow.input.keyword</string>
 			<key>uid</key>
 			<string>ED70539C-9899-441C-8FB8-2636798D573A</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>argumenttype</key>
-				<integer>1</integer>
-				<key>keyword</key>
-				<string>vlp</string>
-				<key>subtext</key>
-				<string></string>
-				<key>text</key>
-				<string>Screenshot Full Page</string>
-				<key>withspace</key>
-				<true/>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.input.keyword</string>
-			<key>uid</key>
-			<string>9B047D4A-A26F-4EAF-8E1E-0C941C2B0724</string>
 			<key>version</key>
 			<integer>1</integer>
 		</dict>
@@ -437,7 +437,7 @@
 			<key>xpos</key>
 			<integer>580</integer>
 			<key>ypos</key>
-			<integer>500</integer>
+			<integer>510</integer>
 		</dict>
 		<key>3771B74D-E6A4-4609-8145-DA87EA79149E</key>
 		<dict>
@@ -521,7 +521,7 @@
 			<key>xpos</key>
 			<integer>400</integer>
 			<key>ypos</key>
-			<integer>500</integer>
+			<integer>510</integer>
 		</dict>
 	</dict>
 	<key>webaddress</key>
